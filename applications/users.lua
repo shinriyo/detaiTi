@@ -30,7 +30,9 @@ do
         }
       end,
       POST = function(self)
-        local res = db.insert("users", {
+        local user_id = self.params.id
+        local res = ""
+        local update_params = {
           name = self.params.name,
           gender = tonumber(self.params.gender),
           marry = tonumber(self.params.marry),
@@ -46,10 +48,17 @@ do
           content = self.params.content,
           hobby = self.params.hobby,
           style = tonumber(self.params.style)
-        }, "id")
-        return {
-          json = res
         }
+        if user_id == nil then
+          res = db.insert("users", update_params, "id")
+          return {
+            json = res
+          }
+        else
+          return db.update("users", update_params, {
+            id = user_id
+          })
+        end
       end
     }),
     ["/users/*"] = function(self)

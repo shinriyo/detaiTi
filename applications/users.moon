@@ -15,7 +15,11 @@ class UsersApplication extends lapis.Application
 
     POST: =>
       -- redirect_to: @url_for "index"
-      res = db.insert "users", {
+      user_id = @params.id
+      res = ""
+
+      -- new
+      update_params = {
         name: @params.name
         gender: tonumber(@params.gender)
         marry: tonumber(@params.marry)
@@ -31,10 +35,15 @@ class UsersApplication extends lapis.Application
         content: @params.content
         hobby: @params.hobby
         style: tonumber(@params.style)
-      }, "id"
-      -- resoult
-      -- ed) [{"id":50}]
-      json: res
+      }
+      if user_id == nil
+        res = db.insert "users", update_params, "id"
+        -- resoult
+        -- ed) [{"id":50}]
+        json: res
+      else
+        -- update
+        db.update "users", update_params, { id: user_id }
   }
 
   -- gender:1/marry:1/child:2/purpose:2/language:[JA,EN]/national:JP/about_me:/smoking:1/location:TOKYO/drinking:1/academic:1/style:2
